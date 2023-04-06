@@ -1,12 +1,11 @@
 {
   "name": "micromarkup",
   "version": "0.0.1",
-  "description": "A tiny library to make creating elements in Javascript or Typescript significantly easier.",
+  "description": "Markup for humans. A tiny library to make markup easily managed.",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "publish": "npx tsc && npm publish"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "markup",
@@ -19,7 +18,9 @@
   "license": "MIT",
   "files": [
     "index.js",
-    "index.d.ts"
+    "index.d.ts",
+    "README.md",
+    "CHANGELOG.md"
   ],
   "devDependencies": {
     "@snowpack/plugin-typescript": "^1.2.1"

@@ -1,6 +1,22 @@
 type Prop = {[name:string]:string}
-type evt = <T extends keyof DocumentEventMap>()=>{name:T, callback:(e?:DocumentEventMap[T], options?:EventListenerOptions)=>void}
+type evt = <T extends keyof DocumentEventMap>()=>{name:T, callback:(e?:DocumentEventMap[T])=>void, options?:EventListenerOptions}
 type mkElement = HTMLElement | Text | Prop | evt;
+interface optionsType {
+    /** Turn legacy mode on. This is equivalent to v0.0.1 */
+    legacyMode?:boolean
+}
+let options:optionsType = {
+    legacyMode:false,
+
+}
+/** Sets config options. Supply a name, and a value. Will apply to future calls for the function(s) */
+export const setOption = <T extends keyof optionsType>(optionName:T, value:optionsType[T])=>{
+    options[optionName] = value
+}
+/** Supply an entirely new options object. */
+export const setOptions = (newOptions:optionsType)=>{
+    options = newOptions;
+}
 /**
  * The `mk` function creates a new HTML element with specified attributes, children, and event
  * listeners.
@@ -8,24 +24,27 @@ type mkElement = HTMLElement | Text | Prop | evt;
  * function to accept an arbitrary number of arguments, each of which must be an instance of the
  * `mkElement` type. These arguments represent the child elements that will be appended to the newly
  * created `div` element.
+ * Note, if an attribute is supplied (from the `attribute` or `a` function), it will be applied to the **first** child.
  * @returns The `mk` function returns an HTML element (`HTMLElement`).
  */
-export const mk = (...children:mkElement[]):HTMLElement=>{
-    const div = document.createElement("div");
+export const mk = (...children:mkElement[]):DocumentFragment|HTMLElement=>{
+    const div = options.legacyMode ? document.createDocumentFragment() : document.createElement("div");
     children.forEach(child=>{
         if (child instanceof HTMLElement || child instanceof Text) {
             div.append(child)
         } else if (child instanceof Function) {
             const evt = child();
-            div.addEventListener(evt.name, evt.callback);
+            div.addEventListener(evt.name, evt.callback, evt.options);
         } else {
             for (const key in child) {
                 const val = child[key];
-                div.setAttribute(key, val);
+                if (options.legacyMode && div instanceof HTMLElement) {
+                    div.setAttribute(key, val);
+                } else div.children[0].setAttribute(key, val);
             };
         };
     });
-    div.classList.add("microMarkup")
+    options.legacyMode && div instanceof HTMLElement && div.classList.add("micromakrup")
     return div;
 }
 /**
@@ -52,8 +71,8 @@ export const n = (tagName:keyof HTMLElementTagNameMap, ...children:mkElement[]):
                     continue;
                 }
                 el.setAttribute(key, val);
-            }
-        }
+            };
+        };
     });
     return el;
 };
@@ -75,8 +94,21 @@ export const t = (text:string):Text=>{
  * assigned to the property.
  * @returns Returns the @see Prop , which can be used in `n`, `node`, `mk`, `microMarkup`.
  */
-export const a = (name:string, value:string):Prop=>{
-    return {[name]:value}
+export const a = (name:Record<string,string>|string, value?:string):Prop=>{
+    if (name instanceof String) {
+        if (!value) throw new Error("Micromarkup: Since you passed a string to the name parameter of the attribute function, the value must be defined. You did not define the value.")
+        return {[name as string]:value}
+    } else if (name instanceof Object) {
+        let returnValue:Prop = {};
+        for(const key in name) {
+            returnValue = {...returnValue, [key]:name[key]}
+        }
+    } else {
+        throw new TypeError(`Micromarkup: Invalid type for attribute function. Expected Type: string or object, type given: ${typeof name}`)
+    }
+    if (!value) throw new Error("Micromarkup: Required parameter: value in attribute function.");
+    // This should never be reached, but anyway.
+    return {[name as unknown as string]:value}
 }
 
 
@@ -106,7 +138,10 @@ export const e = <T = keyof DocumentEventMap>(type: T extends keyof DocumentEven
 // Aliases. I know that `import as` exists, but this is fewer lines of code at the end if using Micromarkup for larger projects.
 
 export const event = e;
+export const on = event;
 export const node = n;
+export const createNode = n;
 export const attribute = a;
+export const setAttribute = a;
 export const text = t;
 export const microMarkup = mk;

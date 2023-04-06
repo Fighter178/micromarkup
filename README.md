@@ -26,6 +26,9 @@ This creates an element.
 The first argument is the tag name for the element, for example, "div".
 After that,  expects `mkElement`s, which is returned by every MicroMarkup function, except `microMarkup` and `mk`.
 These are passes as spread arguments, and are appended to the node in the order they come. If `node` is called within this, it will become a child element.
+### `attribute` Function 
+This function takes a name for the attribute, and a value. 
+After 0.2.0, it can also take an object, where the keys are the attribute names, and the values are the attribute values.
 ## Examples
 Here are some basic examples of MicroMarkup
 ### Basic Buttons
