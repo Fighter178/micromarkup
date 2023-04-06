@@ -1,0 +1,19 @@
+{
+  "name": "micromarkup",
+  "version": "0.0.1",
+  "description": "A tiny library to make creating elements in Javascript or Typescript significantly easier.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "publish": "npx tsc && npm publish"
+  },
+  "keywords": ["markup", "html", "typescript", "web development", "lightweight"],
+  "author": "Fighter178",
+  "license": "MIT",
+  "files": [
+    "index.js",
+    "index.d.ts"
+    
+  ]
+}
