@@ -95,9 +95,9 @@ export const t = (text:string):Text=>{
  * @returns Returns the @see Prop , which can be used in `n`, `node`, `mk`, `microMarkup`.
  */
 export const a = (name:Record<string,string>|string, value?:string):Prop=>{
-    if (name instanceof String) {
+    if (typeof name ==="string") {
         if (!value) throw new Error("Micromarkup: Since you passed a string to the name parameter of the attribute function, the value must be defined. You did not define the value.")
-        return {[name as string]:value}
+        return {[name]:value}
     } else if (name instanceof Object) {
         let returnValue:Prop = {};
         for(const key in name) {
@@ -125,7 +125,7 @@ export const a = (name:Record<string,string>|string, value?:string):Prop=>{
  * @returns A function for use in `n` or `node`.
  */
 
-export const e = <T = keyof DocumentEventMap>(type: T extends keyof DocumentEventMap ? T : string, callback: (e?: T extends keyof DocumentEventMap ? DocumentEventMap[T] : string) => void, options?:EventListenerOptions):evt => {
+export const e = <T = keyof DocumentEventMap>(type: T extends keyof DocumentEventMap ? T : string, callback: (e?: T extends keyof DocumentEventMap ? DocumentEventMap[T] : CustomEvent) => void, options?:EventListenerOptions):evt => {
     //@ts-expect-error It works.
     return () => {
         return {
