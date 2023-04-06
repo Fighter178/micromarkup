@@ -1,5 +1,5 @@
 # MicroMarkup
-A simple library for easily defining HTML in Javascript. At version 0.0.1, it is only ~1.6 KB. 
+A simple library for easily defining HTML in Javascript. At version 0.0.1, it is only ~3.1 KB (minified & gziped). 
 
 ## The basics
 MicroMarkup exports several functions. 
@@ -62,10 +62,10 @@ This gives this, as a `HTMLElement`:
 </div>
 ```
 ### Nesting, Nesting, Nesting!
-We're gonna nest some elements!
+This is how you easily nest elements in MicroMarkup.
 ```ts
 import {mk, n, t, a} from "micromarkup";
-mk(
+const markup = mk(
     n(
         "div",
         a("class", "mydiv"),
@@ -89,6 +89,8 @@ mk(
         )
     )
 );
+// Render markup
+document.body.append(markup);
 ```
 Giving this markup:
 ```html

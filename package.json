@@ -8,12 +8,20 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "publish": "npx tsc && npm publish"
   },
-  "keywords": ["markup", "html", "typescript", "web development", "lightweight"],
+  "keywords": [
+    "markup",
+    "html",
+    "typescript",
+    "web development",
+    "lightweight"
+  ],
   "author": "Fighter178",
   "license": "MIT",
   "files": [
     "index.js",
     "index.d.ts"
-    
-  ]
+  ],
+  "devDependencies": {
+    "@snowpack/plugin-typescript": "^1.2.1"
+  }
 }
