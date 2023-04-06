@@ -22,7 +22,8 @@ const div = mk(
     n(
         "p",
         t("This is so small, minification only saved ~500 bytes.")
-    )
+    ), 
+    t("Basic Markup.")
 );
 document.body.append(div);
 document.head.append(mk(

@@ -1,5 +1,5 @@
 type Prop = {[name:string]:string}
-type evt = <T extends keyof DocumentEventMap>()=>{name:T, callback:(e?:DocumentEventMap[T])=>void}
+type evt = <T extends keyof DocumentEventMap>()=>{name:T, callback:(e?:DocumentEventMap[T], options?:EventListenerOptions)=>void}
 type mkElement = HTMLElement | Text | Prop | evt
 export const mk = (...children:mkElement[]):HTMLElement=>{
     const div = document.createElement("div");
@@ -30,6 +30,10 @@ export const n = (tagName:keyof HTMLElementTagNameMap, ...children:mkElement[]):
         } else {
             for (const key in child) {
                 const val = child[key];
+                if (key === "class") {
+                    el.classList.add(val);
+                    continue;
+                }
                 el.setAttribute(key, val);
             }
         }
@@ -43,16 +47,17 @@ export const t = (text:string):Text=>{
 export const a = (name:string, value:string):Prop=>{
     return {[name]:value}
 }
-export const e = <T extends keyof DocumentEventMap>(type: T, callback: (e?: DocumentEventMap[T]) => void):evt => {
-    //@ts-ignore
+export const e = <T extends keyof DocumentEventMap>(type: T, callback: (e?: DocumentEventMap[T]) => void, options?:EventListenerOptions):evt => {
+    //@ts-expect-error It works.
     return () => {
         return {
             name: type,
-            callback: callback
-        }
+            callback,
+            options
+        };
     }
 };
-
+// Aliases. I know that `import as` exists, but this is fewer lines of code at the end if using Micromarkup for larger projects.
 export const event = e;
 export const node = n;
 export const attribute = a;
