@@ -103,12 +103,10 @@ export const a = (name:Record<string,string>|string, value?:string):Prop=>{
         for(const key in name) {
             returnValue = {...returnValue, [key]:name[key]}
         }
+        return returnValue;
     } else {
         throw new TypeError(`Micromarkup: Invalid type for attribute function. Expected Type: string or object, type given: ${typeof name}`)
     }
-    if (!value) throw new Error("Micromarkup: Required parameter: value in attribute function.");
-    // This should never be reached, but anyway.
-    return {[name as unknown as string]:value}
 }
 
 
