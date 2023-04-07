@@ -28,12 +28,12 @@ After that,  expects `mkElement`s, which is returned by every MicroMarkup functi
 These are passes as spread arguments, and are appended to the node in the order they come. If `node` is called within this, it will become a child element.
 ### `attribute` Function 
 This function takes a name for the attribute, and a value. 
-If using 0.1.0 or later, it can also take an object, where the keys are the attribute names, and the values are the attribute values.
+If using 0.1.1 or later, it can also take an object, where the keys are the attribute names, and the values are the attribute values.
 Usage:
 ```ts
 attribute("name", "value");
 ```
-Or, if at least 0.1.0:
+Or, if at least 0.1.1:
 ```ts
 attribute({
     name:"value",
