@@ -5,3 +5,5 @@
 - Allowed for legacy mode
 - Added better names for the functions, still supporting old ones.
 - Improved Types
+# Version 0.1.1
+Fixed bug on npm build, forgot to compile typescript
