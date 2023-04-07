@@ -20,7 +20,7 @@ export const setOptions = (newOptions) => {
  * @returns The `mk` function returns an HTML element (`HTMLElement`).
  */
 export const mk = (...children) => {
-    const div = options.legacyMode ? document.createDocumentFragment() : document.createElement("div");
+    const div = !options.legacyMode ? document.createDocumentFragment() : document.createElement("div");
     children.forEach(child => {
         if (child instanceof HTMLElement || child instanceof Text) {
             div.append(child);
@@ -42,7 +42,7 @@ export const mk = (...children) => {
         }
         ;
     });
-    options.legacyMode && div instanceof HTMLElement && div.classList.add("micromakrup");
+    options.legacyMode && div instanceof HTMLElement && div.classList.add("micromarkup");
     return div;
 };
 /**
@@ -106,14 +106,11 @@ export const a = (name, value) => {
         for (const key in name) {
             returnValue = { ...returnValue, [key]: name[key] };
         }
+        return returnValue;
     }
     else {
         throw new TypeError(`Micromarkup: Invalid type for attribute function. Expected Type: string or object, type given: ${typeof name}`);
     }
-    if (!value)
-        throw new Error("Micromarkup: Required parameter: value in attribute function.");
-    // This should never be reached, but anyway.
-    return { [name]: value };
 };
 /**
  * This function creates an event listener with a specified type, callback function, and

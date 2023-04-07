@@ -10,3 +10,5 @@ Fixed bug on npm build, forgot to compile typescript
 # Version 0.1.2
 Fixed bug where `legacyMode` is inversed, so legacy mode changed it so it would become 0.1.x. Now, it is correct.
 Fixed the `attribute` function such that objects should work.
+# 0.1.3 
+Okay, now I actually did fix the bugs mentioned in 0.1.2
