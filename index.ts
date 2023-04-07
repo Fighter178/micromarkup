@@ -28,7 +28,7 @@ export const setOptions = (newOptions:optionsType)=>{
  * @returns The `mk` function returns an HTML element (`HTMLElement`).
  */
 export const mk = (...children:mkElement[]):DocumentFragment|HTMLElement=>{
-    const div = options.legacyMode ? document.createDocumentFragment() : document.createElement("div");
+    const div = !options.legacyMode ? document.createDocumentFragment() : document.createElement("div");
     children.forEach(child=>{
         if (child instanceof HTMLElement || child instanceof Text) {
             div.append(child)
@@ -44,7 +44,7 @@ export const mk = (...children:mkElement[]):DocumentFragment|HTMLElement=>{
             };
         };
     });
-    options.legacyMode && div instanceof HTMLElement && div.classList.add("micromakrup")
+    options.legacyMode && div instanceof HTMLElement && div.classList.add("micromarkup");
     return div;
 }
 /**

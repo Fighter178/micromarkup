@@ -1,6 +1,6 @@
 {
   "name": "micromarkup",
-  "version": "0.2.0",
+  "version": "0.1.1",
   "description": "Markup for humans. A tiny library to make markup easily managed.",
   "main": "index.js",
   "types": "index.d.ts",
