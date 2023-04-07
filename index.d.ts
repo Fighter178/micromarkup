@@ -3,9 +3,18 @@ type Prop = {
 };
 type evt = <T extends keyof DocumentEventMap>() => {
     name: T;
-    callback: (e?: DocumentEventMap[T], options?: EventListenerOptions) => void;
+    callback: (e?: DocumentEventMap[T]) => void;
+    options?: EventListenerOptions;
 };
 type mkElement = HTMLElement | Text | Prop | evt;
+interface optionsType {
+    /** Turn legacy mode on. This is equivalent to v0.0.1 */
+    legacyMode?: boolean;
+}
+/** Sets config options. Supply a name, and a value. Will apply to future calls for the function(s) */
+export declare const setOption: <T extends "legacyMode">(optionName: T, value: optionsType[T]) => void;
+/** Supply an entirely new options object. */
+export declare const setOptions: (newOptions: optionsType) => void;
 /**
  * The `mk` function creates a new HTML element with specified attributes, children, and event
  * listeners.
@@ -13,9 +22,10 @@ type mkElement = HTMLElement | Text | Prop | evt;
  * function to accept an arbitrary number of arguments, each of which must be an instance of the
  * `mkElement` type. These arguments represent the child elements that will be appended to the newly
  * created `div` element.
+ * Note, if an attribute is supplied (from the `attribute` or `a` function), it will be applied to the **first** child.
  * @returns The `mk` function returns an HTML element (`HTMLElement`).
  */
-export declare const mk: (...children: mkElement[]) => HTMLElement;
+export declare const mk: (...children: mkElement[]) => DocumentFragment | HTMLElement;
 /**
  * This is function creates and returns a new HTML element with specified tag name,
  * attributes, and children.
@@ -40,7 +50,7 @@ export declare const t: (text: string) => Text;
  * assigned to the property.
  * @returns Returns the @see Prop , which can be used in `n`, `node`, `mk`, `microMarkup`.
  */
-export declare const a: (name: string, value: string) => Prop;
+export declare const a: (name: Record<string, string> | string, value?: string) => Prop;
 /**
  * This function creates an event listener with a specified type, callback function, and
  * options.
@@ -53,10 +63,13 @@ export declare const a: (name: string, value: string) => Prop;
  * `EventListenerOptions` that specifies options for the event listener.
  * @returns A function for use in `n` or `node`.
  */
-export declare const e: <T = keyof DocumentEventMap>(type: T extends keyof DocumentEventMap ? T : string, callback: (e?: (T extends keyof DocumentEventMap ? DocumentEventMap[T] : string) | undefined) => void, options?: EventListenerOptions) => evt;
-export declare const event: <T = keyof DocumentEventMap>(type: T extends keyof DocumentEventMap ? T : string, callback: (e?: (T extends keyof DocumentEventMap ? DocumentEventMap[T] : string) | undefined) => void, options?: EventListenerOptions) => evt;
+export declare const e: <T = keyof DocumentEventMap>(type: T extends keyof DocumentEventMap ? T : string, callback: (e?: (T extends keyof DocumentEventMap ? DocumentEventMap[T] : CustomEvent<any>) | undefined) => void, options?: EventListenerOptions) => evt;
+export declare const event: <T = keyof DocumentEventMap>(type: T extends keyof DocumentEventMap ? T : string, callback: (e?: (T extends keyof DocumentEventMap ? DocumentEventMap[T] : CustomEvent<any>) | undefined) => void, options?: EventListenerOptions) => evt;
+export declare const on: <T = keyof DocumentEventMap>(type: T extends keyof DocumentEventMap ? T : string, callback: (e?: (T extends keyof DocumentEventMap ? DocumentEventMap[T] : CustomEvent<any>) | undefined) => void, options?: EventListenerOptions) => evt;
 export declare const node: (tagName: keyof HTMLElementTagNameMap, ...children: mkElement[]) => mkElement;
-export declare const attribute: (name: string, value: string) => Prop;
+export declare const createNode: (tagName: keyof HTMLElementTagNameMap, ...children: mkElement[]) => mkElement;
+export declare const attribute: (name: Record<string, string> | string, value?: string) => Prop;
+export declare const setAttribute: (name: Record<string, string> | string, value?: string) => Prop;
 export declare const text: (text: string) => Text;
-export declare const microMarkup: (...children: mkElement[]) => HTMLElement;
+export declare const microMarkup: (...children: mkElement[]) => DocumentFragment | HTMLElement;
 export {};

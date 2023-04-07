@@ -1,3 +1,14 @@
+let options = {
+    legacyMode: false,
+};
+/** Sets config options. Supply a name, and a value. Will apply to future calls for the function(s) */
+export const setOption = (optionName, value) => {
+    options[optionName] = value;
+};
+/** Supply an entirely new options object. */
+export const setOptions = (newOptions) => {
+    options = newOptions;
+};
 /**
  * The `mk` function creates a new HTML element with specified attributes, children, and event
  * listeners.
@@ -5,28 +16,33 @@
  * function to accept an arbitrary number of arguments, each of which must be an instance of the
  * `mkElement` type. These arguments represent the child elements that will be appended to the newly
  * created `div` element.
+ * Note, if an attribute is supplied (from the `attribute` or `a` function), it will be applied to the **first** child.
  * @returns The `mk` function returns an HTML element (`HTMLElement`).
  */
 export const mk = (...children) => {
-    const div = document.createElement("div");
+    const div = options.legacyMode ? document.createDocumentFragment() : document.createElement("div");
     children.forEach(child => {
         if (child instanceof HTMLElement || child instanceof Text) {
             div.append(child);
         }
         else if (child instanceof Function) {
             const evt = child();
-            div.addEventListener(evt.name, evt.callback);
+            div.addEventListener(evt.name, evt.callback, evt.options);
         }
         else {
             for (const key in child) {
                 const val = child[key];
-                div.setAttribute(key, val);
+                if (options.legacyMode && div instanceof HTMLElement) {
+                    div.setAttribute(key, val);
+                }
+                else
+                    div.children[0].setAttribute(key, val);
             }
             ;
         }
         ;
     });
-    div.classList.add("microMarkup");
+    options.legacyMode && div instanceof HTMLElement && div.classList.add("micromakrup");
     return div;
 };
 /**
@@ -56,7 +72,9 @@ export const n = (tagName, ...children) => {
                 }
                 el.setAttribute(key, val);
             }
+            ;
         }
+        ;
     });
     return el;
 };
@@ -78,6 +96,23 @@ export const t = (text) => {
  * @returns Returns the @see Prop , which can be used in `n`, `node`, `mk`, `microMarkup`.
  */
 export const a = (name, value) => {
+    if (typeof name === "string") {
+        if (!value)
+            throw new Error("Micromarkup: Since you passed a string to the name parameter of the attribute function, the value must be defined. You did not define the value.");
+        return { [name]: value };
+    }
+    else if (name instanceof Object) {
+        let returnValue = {};
+        for (const key in name) {
+            returnValue = { ...returnValue, [key]: name[key] };
+        }
+    }
+    else {
+        throw new TypeError(`Micromarkup: Invalid type for attribute function. Expected Type: string or object, type given: ${typeof name}`);
+    }
+    if (!value)
+        throw new Error("Micromarkup: Required parameter: value in attribute function.");
+    // This should never be reached, but anyway.
     return { [name]: value };
 };
 /**
@@ -104,7 +139,10 @@ export const e = (type, callback, options) => {
 };
 // Aliases. I know that `import as` exists, but this is fewer lines of code at the end if using Micromarkup for larger projects.
 export const event = e;
+export const on = event;
 export const node = n;
+export const createNode = n;
 export const attribute = a;
+export const setAttribute = a;
 export const text = t;
 export const microMarkup = mk;
